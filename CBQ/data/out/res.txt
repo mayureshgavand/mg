@@ -1,0 +1,2 @@
+"name";"Overall_Quality";"Average";"Score";"DQ_EXP"
+"Customer DQ report";19;21;1000;"Bad"

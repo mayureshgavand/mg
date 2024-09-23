@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<purity-config version="15.0.0.231026-6362-97eca32c">
+	<references/>
+	<component-mappings>
+		<propertyMappings/>
+	</component-mappings>
+
+<!-- (Is Ontario) --><step mode="NORMAL" className="com.ataccama.dqc.tasks.conditions.Condition" disabled="false" id="Is Ontario">
+		<properties condition="src_province = &#39;ON&#39;"/>
+		<visual-constraints layout="vertical" bounds="140,212,-1,-1"/>
+	</step>
+	<connection className="com.ataccama.dqc.model.elements.connections.StandardFlowConnection" disabled="false">
+		<source endpoint="out_false" step="Is Ontario"/>
+		<target endpoint="in" step="Not Ontario"/>
+		<visual-constraints>
+			<bendpoints>
+				<point location="92,260"/>
+			</bendpoints>
+		</visual-constraints>
+	</connection>
+	<connection className="com.ataccama.dqc.model.elements.connections.StandardFlowConnection" disabled="false">
+		<source endpoint="out_true" step="Is Ontario"/>
+		<target endpoint="in" step="Ontario addresses"/>
+		<visual-constraints>
+			<bendpoints>
+				<point location="331,260"/>
+			</bendpoints>
+		</visual-constraints>
+	</connection>
+
+
+
+<!-- (Not Ontario) --><step mode="NORMAL" className="com.ataccama.dqc.tasks.io.text.write.TextFileWriter" disabled="false" id="Not Ontario">
+		<properties writeHeader="true" fileName="../data/out/nocan.txt" fieldSeparator=";" generateMetadata="true" stringQualifierEscape="&quot;" writeAllColumns="true" compression="NONE" encoding="UTF-8" lineSeparator="\r\n" stringQualifier="&quot;" useStringQualifierOnAllColumns="false">
+			<columns/>
+			<dataFormatParameters falseValue="false" dateTimeFormat="yyyy-MM-dd HH:mm:ss" decimalSeparator="." dayFormat="yyyy-MM-dd" trueValue="true" dateFormatLocale="en_US" thousandsSeparator=""/>
+		</properties>
+		<visual-constraints layout="vertical" bounds="68,284,-1,-1"/>
+	</step>
+
+
+
+<!-- (Ontario addresses) --><step mode="NORMAL" className="com.ataccama.dqc.tasks.io.text.write.TextFileWriter" disabled="false" id="Ontario addresses">
+		<properties writeHeader="true" fileName="../data/out/can.txt" fieldSeparator=";" generateMetadata="true" stringQualifierEscape="&quot;" writeAllColumns="true" compression="NONE" encoding="UTF-8" lineSeparator="\r\n" stringQualifier="&quot;" useStringQualifierOnAllColumns="false">
+			<columns/>
+			<dataFormatParameters falseValue="false" dateTimeFormat="yyyy-MM-dd HH:mm:ss" decimalSeparator="." dayFormat="yyyy-MM-dd" trueValue="true" dateFormatLocale="en_US" thousandsSeparator=""/>
+		</properties>
+		<visual-constraints layout="vertical" bounds="308,284,-1,-1"/>
+	</step>
+
+
+
+<!-- (addresses) --><step mode="NORMAL" className="com.ataccama.dqc.tasks.io.text.read.TextFileReader" disabled="false" id="addresses">
+		<properties lineMaxReadLength="65536" fileName="../data/in/addresses.csv" fieldSeparator=";" stringQualifierEscape="&quot;" numberOfLinesInFooter="0" compression="NONE" encoding="UTF-8" lineSeparator="\r\n" stringQualifier="&quot;" numberOfLinesInHeader="1">
+			<columns>
+				<textReaderColumn name="src_street" ignore="false" type="STRING"/>
+				<textReaderColumn name="src_city" ignore="false" type="STRING"/>
+				<textReaderColumn name="src_province" ignore="false" type="STRING"/>
+				<textReaderColumn name="src_zip" ignore="false" type="STRING"/>
+			</columns>
+			<dataFormatParameters falseValue="false" dateTimeFormat="yy-MM-dd HH:mm:ss" decimalSeparator="." dayFormat="yy-MM-dd" trueValue="true" dateFormatLocale="en_US" thousandsSeparator=""/>
+			<errorHandlingStrategy rejectFileName="../../Tutorials/05 Flow control/rejected.txt">
+				<errorInstructions>
+					<errorInstruction dataStrategy="READ_POSSIBLE" errorType="EXTRA_DATA" putToLog="true" putToReject="false"/>
+					<errorInstruction dataStrategy="STOP" errorType="LONG_LINE" putToLog="true" putToReject="true"/>
+					<errorInstruction dataStrategy="STOP" errorType="PROCESSING_ERROR" putToLog="true" putToReject="false"/>
+					<errorInstruction dataStrategy="READ_POSSIBLE" errorType="INVALID_DATE" putToLog="true" putToReject="false"/>
+					<errorInstruction dataStrategy="READ_POSSIBLE" errorType="SHORT_LINE" putToLog="true" putToReject="true"/>
+					<errorInstruction dataStrategy="NULL_VALUE" errorType="UNPARSABLE_FIELD" putToLog="true" putToReject="false"/>
+				</errorInstructions>
+			</errorHandlingStrategy>
+			<shadowColumns/>
+		</properties>
+		<visual-constraints layout="vertical" bounds="144,120,-1,-1"/>
+	</step>
+	<connection className="com.ataccama.dqc.model.elements.connections.StandardFlowConnection" disabled="false">
+		<source endpoint="out" step="addresses"/>
+		<target endpoint="in" step="Is Ontario"/>
+		<visual-constraints>
+			<bendpoints>
+				<point location="91,212"/>
+			</bendpoints>
+		</visual-constraints>
+	</connection>
+
+</purity-config>
